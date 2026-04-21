@@ -1,0 +1,18 @@
+flask
+flask-cors
+python-dotenv
+pymongo
+bcrypt
+pyjwt
+
+# AI / Agent
+langchain
+langchain-core
+langchain-mistralai
+
+# Tools
+tavily-python
+requests
+
+# Optional (better logging / dev)
+rich

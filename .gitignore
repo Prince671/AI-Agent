@@ -1,0 +1,72 @@
+# ==============================
+# 🔐 ENV FILES (IMPORTANT)
+# ==============================
+.env
+*.env
+
+# ==============================
+# 🐍 PYTHON (BACKEND)
+# ==============================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Python logs
+*.log
+
+# ==============================
+# ⚛️ REACT / NODE (FRONTEND)
+# ==============================
+node_modules/
+dist/
+build/
+
+# Vite cache
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==============================
+# 📁 SYSTEM FILES
+# ==============================
+.DS_Store
+Thumbs.db
+
+# ==============================
+# 🧠 EDITOR FILES
+# ==============================
+.vscode/
+.idea/
+
+# ==============================
+# 📦 PACKAGE LOCK (OPTIONAL)
+# ==============================
+# If you want reproducible builds, KEEP this file
+# If not, uncomment below
+# package-lock.json
+
+
+
+# ==============================
+# 🔐 SECRET KEYS / CONFIGS
+# ==============================
+*.pem
+*.key
+*.crt
+
+# ==============================
+# 🧪 TEST / TEMP FILES
+# ==============================
+tmp/
+temp/
