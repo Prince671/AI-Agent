@@ -349,15 +349,21 @@ export default function Chat() {
 
   const sendMessage = async (msgInput = input) => {
     if (!msgInput.trim() || loading) return;
+
     const userMsg = msgInput.trim();
     setInput("");
     setLoading(true);
 
-    setMessages((prev) => [...prev, { role: "user", text: userMsg }]);
-    setMessages((prev) => [...prev, { role: "ai", typing: true }]);
+    // ✅ Add user + typing in ONE update (fix race condition)
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text: userMsg },
+      { role: "ai", typing: true },
+    ]);
 
     try {
       const token = localStorage.getItem("token");
+
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/agent-stream`,
         {
@@ -366,60 +372,95 @@ export default function Chat() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ message: userMsg, chat_id: chatId }),
+          body: JSON.stringify({
+            message: userMsg,
+            chat_id: chatId,
+          }),
         },
       );
 
+      // ❌ Handle HTTP errors
+      if (!response.ok) {
+        throw new Error("Server error");
+      }
+
       const contentType = response.headers.get("content-type") || "";
 
+      // =========================
+      // 📊 JSON RESPONSE (TOOLS)
+      // =========================
       if (contentType.includes("application/json")) {
         const data = await response.json();
+
         if (data.type === "stock_chart") {
           setMessages((prev) =>
-            prev.slice(0, -1).concat({ role: "ai", chart: data.symbol }),
+            prev.slice(0, -1).concat({
+              role: "ai",
+              chart: data.symbol,
+            }),
           );
-          setLoading(false);
-          fetchChats();
-          return;
-        }
-        if (data.error) {
+        } else if (data.error) {
           setMessages((prev) =>
-            prev.slice(0, -1).concat({ role: "ai", text: `⚠️ ${data.error}` }),
+            prev.slice(0, -1).concat({
+              role: "ai",
+              text: `⚠️ ${data.error}`,
+            }),
           );
-          setLoading(false);
-          return;
         }
+
+        setLoading(false);
+        fetchChats();
+        return;
+      }
+
+      // =========================
+      // 🔄 STREAM RESPONSE
+      // =========================
+      if (!response.body) {
+        throw new Error("No response body");
       }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let full = "";
 
+      let fullText = "";
+
+      // Replace typing with empty message
       setMessages((prev) => prev.slice(0, -1).concat({ role: "ai", text: "" }));
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value);
-        full += chunk;
+
+        const chunk = decoder.decode(value, { stream: true });
+        fullText += chunk;
+
         setMessages((prev) => {
           const updated = [...prev];
-          updated[updated.length - 1] = { role: "ai", text: full };
+          updated[updated.length - 1] = {
+            role: "ai",
+            text: fullText,
+          };
           return updated;
         });
       }
 
+      // 🔊 Speak after complete response
+      if (fullText) speak(fullText);
+
       fetchChats();
-      speak(full);
     } catch (err) {
       console.error(err);
+
       setMessages((prev) =>
-        prev
-          .slice(0, -1)
-          .concat({ role: "ai", text: "⚠️ Something went wrong." }),
+        prev.slice(0, -1).concat({
+          role: "ai",
+          text: "⚠️ Something went wrong. Please try again.",
+        }),
       );
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleKey = (e) => {
@@ -434,7 +475,7 @@ export default function Chat() {
       style={{
         display: "flex",
         height: "100vh",
-        height: "100dvh",
+
         background: t.bg,
         color: t.text,
         fontFamily: "'Sora', 'DM Sans', sans-serif",

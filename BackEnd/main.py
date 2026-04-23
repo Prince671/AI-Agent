@@ -309,6 +309,36 @@ def delete_chat(chat_id):
 
     return jsonify({"message": "Deleted"})
 
+
+@app.route("/stock-history", methods=["GET"])
+def stock_history():
+    try:
+        symbol = request.args.get("symbol", "AAPL")
+
+        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=1mo"
+        res = requests.get(url)
+        data = res.json()
+
+        result = data["chart"]["result"][0]
+
+        timestamps = result["timestamp"]
+        prices = result["indicators"]["quote"][0]["close"]
+
+        # convert timestamps → readable dates
+        from datetime import datetime
+        labels = [
+            datetime.fromtimestamp(t).strftime("%d %b")
+            for t in timestamps
+        ]
+
+        return jsonify({
+            "timestamps": labels,
+            "prices": prices
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # ==============================
 # 🏠 HEALTH CHECK
 # ==============================

@@ -16,3 +16,4 @@ requests
 
 # Optional (better logging / dev)
 rich
+gunicorn
