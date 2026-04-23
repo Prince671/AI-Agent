@@ -21,7 +21,7 @@ app = Flask(__name__)
 # ✅ FIXED CORS (important for React)
 CORS(
     app,
-    origins=["http://localhost:5173"],
+    origins="*",
     supports_credentials=True,
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "DELETE", "OPTIONS"]

@@ -5,7 +5,7 @@ import { listen, speak } from "../utils/voice";
 import StockChart from "./StockChart";
 import ReactMarkdown from "react-markdown";
 import "../styles/responsive.css"; // ← import responsive styles
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // ── Theme Context ──────────────────────────────────────────────
 const THEMES = {
@@ -274,6 +274,7 @@ export default function Chat() {
   const bottomRef = useRef();
   const inputRef = useRef();
   const t = THEMES[theme];
+  const navigate = useNavigate();
 
   // ── Responsive: track viewport width ──
   useEffect(() => {
@@ -911,7 +912,8 @@ export default function Chat() {
               whileTap={{ scale: 0.95 }}
               onClick={() => {
                 localStorage.removeItem("token");
-                window.location.href = "/";
+                localStorage.removeItem("name");
+                navigate("/");
               }}
               style={{
                 background: "rgba(239,68,68,0.1)",

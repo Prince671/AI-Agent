@@ -1,30 +1,44 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Chat from "./components/Chat";
 
-// ── Protected Route ────────────────────────────────────────────
-function Protected({ children }) {
-  const token = localStorage.getItem("token");
-  return token ? children : <Navigate to="/" replace />;
-}
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicRoute from "./routes/PublicRoute";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* 🔓 PUBLIC */}
+        <Route
+          path="/"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        />
+
+        {/* 🔒 PROTECTED */}
         <Route
           path="/chat"
           element={
-            <Protected>
+            <ProtectedRoute>
               <Chat />
-            </Protected>
+            </ProtectedRoute>
           }
         />
-        {/* Catch-all → login */}
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
