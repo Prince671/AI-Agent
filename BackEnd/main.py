@@ -295,6 +295,7 @@ def get_chat(chat_id):
 
     return jsonify(chat)
 
+
 # ==============================
 # 🗑️ DELETE CHAT
 # ==============================
