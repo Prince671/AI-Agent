@@ -1,0 +1,312 @@
+/* ═══════════════════════════════════════════════════════════════
+   ps-Agent — Responsive Styles
+   Mobile-first breakpoints layered on top of index.css
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Variables ─────────────────────────────────────────────── */
+:root {
+  --sidebar-width: 260px;
+  --header-height: 60px;
+  --input-area-height: 90px;
+  --border-radius-card: 20px;
+  --border-radius-btn: 12px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   AUTH PAGES  (Login / Register)
+   ══════════════════════════════════════════════════════════════ */
+
+.auth-page {
+  height: 100vh;
+  height: 100dvh; /* dynamic viewport for mobile browsers */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050a14;
+  font-family: 'Sora', 'DM Sans', sans-serif;
+  overflow: hidden;
+  position: relative;
+  padding: var(--spacing-md);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: #0d1526;
+  border: 1px solid #1a2540;
+  border-radius: var(--border-radius-card);
+  padding: 36px 32px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,130,246,0.07);
+  position: relative;
+  z-index: 10;
+}
+
+/* Mobile — Auth */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 28px 20px;
+    border-radius: 16px;
+  }
+
+  .auth-card h1 {
+    font-size: 20px !important;
+  }
+
+  .auth-logo {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 18px !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CHAT LAYOUT
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Sidebar overlay on mobile ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 19;
+}
+
+/* ── Sidebar ── */
+.chat-sidebar {
+  position: relative;
+  z-index: 20;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+/* ── Header ── */
+.chat-header {
+  padding: 14px 20px;
+  min-height: var(--header-height);
+}
+
+.chat-header-title {
+  font-size: 15px !important;
+}
+
+.chat-header-subtitle {
+  font-size: 11px;
+}
+
+/* Hide label text on voice/theme buttons on small screens */
+.btn-label {
+  display: inline;
+}
+
+/* ── Messages ── */
+.messages-area {
+  padding: 24px 20px;
+}
+
+.message-bubble {
+  max-width: 72%;
+}
+
+/* ── Input area ── */
+.input-area {
+  padding: 14px 20px 20px;
+}
+
+.input-hint {
+  display: block;
+}
+
+/* ── Suggestion chips ── */
+.suggestion-grid {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TABLET  (≤ 900px)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .chat-header-title {
+    font-size: 14px !important;
+  }
+
+  /* Voice button: icon only */
+  .voice-btn-label { display: none; }
+
+  /* Theme button: icon only */
+  .theme-btn-label { display: none; }
+
+  /* Tighten header gap */
+  .chat-header {
+    padding: 12px 16px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MOBILE  (≤ 640px)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+
+  /* Sidebar becomes a drawer over the content */
+  .chat-sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100% !important;
+    height: 100dvh !important;
+    z-index: 20;
+    box-shadow: 4px 0 40px rgba(0,0,0,0.6);
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+
+  /* Messages bubbles wider on mobile */
+  .message-bubble {
+    max-width: 88% !important;
+  }
+
+  /* Avatar: smaller on mobile */
+  .msg-avatar {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 12px !important;
+  }
+
+  /* Input area: tighter padding */
+  .input-area {
+    padding: 10px 12px 14px !important;
+  }
+
+  /* Hide keyboard hint on mobile */
+  .input-hint {
+    display: none !important;
+  }
+
+  /* Messages padding */
+  .messages-area {
+    padding: 16px 12px !important;
+  }
+
+  /* Header */
+  .chat-header {
+    padding: 10px 12px !important;
+  }
+
+  /* Empty state: smaller */
+  .empty-state-icon {
+    font-size: 42px !important;
+  }
+
+  .empty-state-title {
+    font-size: 18px !important;
+  }
+
+  .empty-state-desc {
+    font-size: 13px !important;
+  }
+
+  /* Suggestion chips: 2 per row, smaller */
+  .suggestion-chip {
+    font-size: 12px !important;
+    padding: 7px 12px !important;
+  }
+
+  /* Logout button: icon only */
+  .logout-label { display: none; }
+
+  /* Header title subtitle hidden */
+  .chat-header-subtitle { display: none; }
+
+  /* Input textarea font */
+  .chat-textarea {
+    font-size: 16px !important; /* prevent iOS zoom */
+  }
+
+  /* Send button: shorter text */
+  .send-btn-text::after {
+    content: "↑";
+  }
+  .send-btn-full { display: none; }
+  .send-btn-short { display: flex; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   VERY SMALL  (≤ 380px)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 380px) {
+  .message-bubble {
+    max-width: 94% !important;
+  }
+
+  .chat-header-title {
+    font-size: 13px !important;
+  }
+
+  .suggestion-chip {
+    font-size: 11px !important;
+    padding: 6px 10px !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   WEATHER WIDGET — responsive
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .weather-widget {
+    min-width: unset !important;
+    width: 100%;
+    padding: 14px 16px !important;
+  }
+
+  .weather-temp {
+    font-size: 34px !important;
+  }
+
+  .weather-icon {
+    font-size: 36px !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STOCK CHART — responsive
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .stock-chart-wrapper {
+    border-radius: 10px !important;
+  }
+
+  .stock-chart-container {
+    height: 220px !important;
+  }
+
+  .stock-chart-container > div {
+    height: 220px !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   UTILITY: Safe area for notched/island phones
+   ══════════════════════════════════════════════════════════════ */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .input-area {
+    padding-bottom: calc(14px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .input-area {
+      padding-bottom: calc(10px + env(safe-area-inset-bottom)) !important;
+    }
+  }
+}
