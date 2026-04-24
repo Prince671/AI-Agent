@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "./api";
 import { useNavigate, Link } from "react-router-dom";
@@ -13,6 +13,109 @@ const PARTICLES = Array.from({ length: 18 }, (_, i) => ({
   delay: Math.random() * 4,
 }));
 
+// ─────────────────────────────────────────────
+// SKELETON
+// ─────────────────────────────────────────────
+function Bone({ w = "100%", h = 16, r = 8 }) {
+  return (
+    <div
+      style={{
+        width: w,
+        height: h,
+        borderRadius: r,
+        background:
+          "linear-gradient(90deg,#0d1526 25%,#1a2540 50%,#0d1526 75%)",
+        backgroundSize: "200% 100%",
+        animation: "skshimmer 1.5s infinite",
+      }}
+    />
+  );
+}
+
+function RegisterSkeleton() {
+  return (
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#050a14",
+        padding: "16px",
+      }}
+    >
+      <style>{`
+        @keyframes skshimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        html,body,#root{width:100%;height:100%;overflow:hidden;}
+      `}</style>
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 380,
+          background: "#0d1526",
+          border: "1px solid #1a2540",
+          borderRadius: 20,
+          padding: "36px 32px",
+          boxShadow: "0 24px 80px rgba(0,0,0,0.5)",
+        }}
+      >
+        {/* Logo */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 12,
+            marginBottom: 28,
+          }}
+        >
+          <div
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: "50%",
+              background:
+                "linear-gradient(90deg,#0d1526 25%,#1a2540 50%,#0d1526 75%)",
+              backgroundSize: "200% 100%",
+              animation: "skshimmer 1.5s infinite",
+            }}
+          />
+          <Bone w="160px" h={22} r={6} />
+          <Bone w="110px" h={13} r={4} />
+        </div>
+
+        {/* Three input fields */}
+        {[["70px"], ["50px"], ["65px"]].map(([lw], i) => (
+          <div key={i} style={{ marginBottom: 14 }}>
+            <Bone w={lw} h={12} r={4} />
+            <div style={{ marginTop: 6 }}>
+              <Bone w="100%" h={44} r={11} />
+            </div>
+          </div>
+        ))}
+
+        {/* Button */}
+        <div style={{ marginTop: 6 }}>
+          <Bone w="100%" h={48} r={12} />
+        </div>
+
+        {/* Link */}
+        <div
+          style={{ display: "flex", justifyContent: "center", marginTop: 18 }}
+        >
+          <Bone w="200px" h={13} r={4} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// REGISTER
+// ─────────────────────────────────────────────
 export default function Register() {
   const nav = useNavigate();
   const [name, setName] = useState("");
@@ -23,6 +126,12 @@ export default function Register() {
   const [success, setSuccess] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [focused, setFocused] = useState("");
+  const [pageReady, setPageReady] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setPageReady(true), 850);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleRegister = async () => {
     if (!name || !email || !password) {
@@ -102,6 +211,7 @@ export default function Register() {
           onFocus={() => setFocused(fieldName)}
           onBlur={() => setFocused("")}
           onKeyDown={handleKey}
+          disabled={loading || success}
           style={{
             flex: 1,
             background: "none",
@@ -131,22 +241,131 @@ export default function Register() {
     </div>
   );
 
+  if (!pageReady) return <RegisterSkeleton />;
+
   return (
     <div
       className="auth-page"
       style={{
+        width: "100vw",
         height: "100vh",
-        height: "100dvh",
+        overflow: "hidden" /* no page scroll */,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         background: "#050a14",
-        fontFamily: "'Sora', 'DM Sans', sans-serif",
-        overflow: "hidden",
+        fontFamily: "'Sora','DM Sans',sans-serif",
         position: "relative",
         padding: "16px",
       }}
     >
+      <style>{`
+        @keyframes skshimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        html,body,#root{width:100%;height:100%;overflow:hidden;}
+      `}</style>
+
+      {/* ── Loading blocker ── */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 9999,
+              background: "rgba(5,10,20,0.65)",
+              backdropFilter: "blur(6px)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 16,
+              pointerEvents: "all",
+              cursor: "wait",
+            }}
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                border: "3px solid rgba(139,92,246,0.2)",
+                borderTop: "3px solid #8b5cf6",
+              }}
+            />
+            <p
+              style={{
+                color: "#94a3b8",
+                fontSize: 14,
+                fontFamily: "'Sora',sans-serif",
+                fontWeight: 500,
+              }}
+            >
+              Creating your account…
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Success overlay ── */}
+      <AnimatePresence>
+        {success && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 9999,
+              background: "rgba(5,10,20,0.75)",
+              backdropFilter: "blur(10px)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 16,
+              pointerEvents: "all",
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 220 }}
+              style={{ fontSize: 64 }}
+            >
+              ✅
+            </motion.div>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              style={{
+                color: "#4ade80",
+                fontSize: 18,
+                fontFamily: "'Sora',sans-serif",
+                fontWeight: 700,
+              }}
+            >
+              Account Created!
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              style={{ color: "#64748b", fontSize: 13 }}
+            >
+              Redirecting to login…
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Particles */}
       {PARTICLES.map((p) => (
         <motion.div
           key={p.id}
@@ -170,6 +389,7 @@ export default function Register() {
         />
       ))}
 
+      {/* Glow orbs */}
       <div
         style={{
           position: "absolute",
@@ -179,7 +399,7 @@ export default function Register() {
           height: 500,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%)",
+            "radial-gradient(circle,rgba(139,92,246,0.12) 0%,transparent 70%)",
           pointerEvents: "none",
         }}
       />
@@ -192,16 +412,16 @@ export default function Register() {
           height: 400,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)",
+            "radial-gradient(circle,rgba(59,130,246,0.1) 0%,transparent 70%)",
           pointerEvents: "none",
         }}
       />
 
+      {/* Card */}
       <motion.div
         initial={{ opacity: 0, y: 30, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="auth-card"
         style={{
           width: "100%",
           maxWidth: 380,
@@ -212,19 +432,19 @@ export default function Register() {
           boxShadow: "0 24px 80px rgba(0,0,0,0.5)",
           position: "relative",
           zIndex: 10,
+          pointerEvents: loading || success ? "none" : "auto",
         }}
       >
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <motion.div
-            className="auth-logo"
             animate={{ rotate: [0, 360] }}
             transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
             style={{
               width: 52,
               height: 52,
               borderRadius: "50%",
-              background: "linear-gradient(135deg, #8b5cf6, #3b82f6)",
+              background: "linear-gradient(135deg,#8b5cf6,#3b82f6)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -249,29 +469,6 @@ export default function Register() {
             Join ps-Agent today
           </p>
         </div>
-
-        {/* Success */}
-        <AnimatePresence>
-          {success && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              style={{
-                background: "rgba(34,197,94,0.12)",
-                border: "1px solid rgba(34,197,94,0.25)",
-                borderRadius: 10,
-                padding: "12px 13px",
-                fontSize: 13,
-                color: "#4ade80",
-                marginBottom: 16,
-                textAlign: "center",
-                fontWeight: 600,
-              }}
-            >
-              ✅ Registered! Redirecting to login...
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Error */}
         <AnimatePresence>
@@ -308,10 +505,11 @@ export default function Register() {
 
         <motion.button
           whileHover={{
-            scale: 1.02,
-            boxShadow: "0 6px 24px rgba(139,92,246,0.45)",
+            scale: loading || success ? 1 : 1.02,
+            boxShadow:
+              loading || success ? "none" : "0 6px 24px rgba(139,92,246,0.45)",
           }}
-          whileTap={{ scale: 0.97 }}
+          whileTap={{ scale: loading || success ? 1 : 0.97 }}
           onClick={handleRegister}
           disabled={loading || success}
           style={{
@@ -322,7 +520,7 @@ export default function Register() {
             background:
               loading || success
                 ? "#1a2540"
-                : "linear-gradient(135deg, #8b5cf6, #3b82f6)",
+                : "linear-gradient(135deg,#8b5cf6,#3b82f6)",
             color: loading || success ? "#64748b" : "#fff",
             fontWeight: 700,
             fontSize: 15,
@@ -344,7 +542,7 @@ export default function Register() {
               >
                 ⟳
               </motion.span>{" "}
-              Creating account...
+              Creating account…
             </>
           ) : (
             "Create Account →"
