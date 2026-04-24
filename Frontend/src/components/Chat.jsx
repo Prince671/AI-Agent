@@ -834,8 +834,8 @@ export default function Chat() {
   const globalCSS = `
     @keyframes skshimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
     *{box-sizing:border-box;margin:0;padding:0;}
-    html,body{width:100%;height:100%;overflow:hidden;}
-    #root{width:100%;height:100%;overflow:hidden;}
+    html,body{width:100%;height:100%;overflow:auto;}
+    #root{width:100%;height:100%;overflow:auto;}
     .msgs-scroll{overflow-y:auto;overflow-x:hidden;}
     .msgs-scroll::-webkit-scrollbar{width:4px;}
     .msgs-scroll::-webkit-scrollbar-track{background:transparent;}
