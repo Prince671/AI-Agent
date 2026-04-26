@@ -1,6 +1,7 @@
-🚀 AI Agent 
+🚀 AI Agent
 
 An advanced Full Stack AI Agent that can understand user queries, use tools intelligently, and respond in real-time with voice, streaming, and dynamic UI.
+
 This is not just a chatbot — it’s a tool-using intelligent assistant.
 
 
@@ -356,3 +357,4 @@ If you like this project:
 
 
 ---
+
